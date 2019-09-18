@@ -23,6 +23,7 @@ fn main() {
 			<body>
 				|f| {stationary(f)}
 				|f| {moving(f)}
+				|f| {arbitrary(f)}
 			</body>
 		</html>
 	}
@@ -55,7 +56,7 @@ fn moving(f: &mut dyn fmt::Write) -> fmt::Result {
 	let target = Target {
 		position: [450.0, 0.0],
 		velocity: [100.0, 50.0],
-		gravity: 0.0,
+		..Default::default()
 	};
 	let s1 = Solver::lob(weapon, target).solve().unwrap();
 	let s2 = Solver::optimal(weapon, target).solve().unwrap();
@@ -95,7 +96,7 @@ fn stationary(f: &mut dyn fmt::Write) -> fmt::Result {
 	let target = Target {
 		position: [650.0, 150.0],
 		velocity: [0.0, 0.0],
-		gravity: 0.0,
+		..Default::default()
 	};
 	let s1 = Solver::lob(weapon, target).solve().unwrap();
 	let s2 = Solver::optimal(weapon, target).solve().unwrap();
@@ -122,6 +123,47 @@ fn stationary(f: &mut dyn fmt::Write) -> fmt::Result {
 	}
 }
 
+fn arbitrary(f: &mut dyn fmt::Write) -> fmt::Result {
+	let weapon = Weapon {
+		speed: 650.0,
+		gravity: 400.0,
+	};
+	let target = Target {
+		position: [650.0, 50.0],
+		velocity: [0.0, 0.0],
+		radius: 100.0,
+		..Default::default()
+	};
+	let s1 = Solver::lob(weapon, target).solve().unwrap();
+	let s2 = Solver::optimal(weapon, target).solve().unwrap();
+	xwrite! { f,
+		<svg width="800" height="450" viewBox="-50 -600 800 450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+			<g transform="translate(0, -200) scale(1,-1)">
+				<line x0="-1000" x1="2000" y0="0" y1="0" stroke="black" vector-effect="non-scaling-stroke" shape-rendering="crispEdges" />
+				<line y0="-1000" y1="1000" x0="0" x1="0" stroke="black" vector-effect="non-scaling-stroke" shape-rendering="crispEdges" />
+				<path d={path(seq(s1.time + 0.3).map(|time| target.predict(time)))} fill="none" stroke="green" style="opacity: 0.5;" id="C_s0" />
+				<path d={path(seq(s1.time).map(|time| weapon.fire(s1.angle, time)))} fill="none" stroke="red" style="opacity: 0.5;" id="C_s1" />
+				<path d={path(seq(s2.time).map(|time| weapon.fire(s2.angle, time)))} fill="none" stroke="blue" style="opacity: 0.5;" id="C_s2" />
+				<circle r="5" fill="green">
+					<animateMotion dur={s1.time + 0.3} fill="freeze" begin="0s;C_m.end+1s">
+					<mpath xlink:href="#C_s0"></mpath>
+					</animateMotion>
+				</circle>
+				<circle r="5" fill="red">
+					<animateMotion id="C_m" dur={s1.time} fill="freeze" begin="0s;C_m.end+1s">
+					<mpath xlink:href="#C_s1"></mpath>
+					</animateMotion>
+				</circle>
+				<circle r="5" fill="blue">
+					<animateMotion dur={s2.time} fill="freeze" begin="0s;C_m.end+1s">
+					<mpath xlink:href="#C_s2"></mpath>
+					</animateMotion>
+				</circle>
+			</g>
+		</svg>
+	}
+}
+
 //----------------------------------------------------------------
 
 #[derive(Copy, Clone, Debug, Default)]
@@ -129,12 +171,13 @@ pub struct Target {
 	pub position: [f32; 2],
 	pub velocity: [f32; 2],
 	pub gravity: f32,
+	pub radius: f32,
 }
 impl Target {
 	/// Extrapolates the target under freefall `time` seconds into the future.
 	pub fn predict(&self, time: f32) -> [f32; 2] {
-		let x = self.position[0] + self.velocity[0] * time;
-		let y = self.position[1] + self.velocity[1] * time - self.gravity * time * time * 0.5;
+		let x = self.position[0] + self.velocity[0] * time + self.radius * f32::cos(time);
+		let y = self.position[1] + self.velocity[1] * time - self.gravity * time * time * 0.5 + self.radius * f32::sin(time);
 		[x, y]
 	}
 }

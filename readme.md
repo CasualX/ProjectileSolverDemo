@@ -126,6 +126,20 @@ Legend:
 
 The above animation shows the solver in 2D action but is trivially extended to 3D. Plug in an appropriate target position predictor and construct the 2D setup before solving.
 
+Just to show that the target predictor isn't restricted to linear trajectory, in the following animation the target is making a circular motion and the solver has no issues hitting the target:
+
+![](img/fig3.svg)
+
+If you're interested in reading more about this topic the following articles may be of interest:
+
+* https://www.forrestthewoods.com/blog/solving_ballistic_trajectories/
+
+  This person tries to analytically solve the movements of the projectile and the target moving in a linear motion. For my purposes it is important that the target predictor can be chosen freely and thus his analytic solution does not apply here.
+
+* https://www.hindawi.com/journals/ijcgt/2014/463489/
+
+  This article is more advanced as it incorporates linear drag into the solver as well as solves for more than just the angle to shoot at to hit the target. The article only tries to hit stationary targets but briefly hints at an iterative approach to use the same solution to hit a moving target. It is that solution that I present here. Plug in his solutions for hitting a stationary target with fixed initial speed projectile and now you can hit moving targets in 3D!
+
 The animations were made with custom code and rendering to svg with [format_xml](https://github.com/CasualX/format_xml). My personal goal with this article is to experiment with quickly and simply visualizing algorithms and using Rust + SVG as my canvas.
 
 This isn't something new, but I wanted to write this down for future reference. Years ago I made a video demonstrating the results of my efforts in [Team Fortress 2](https://en.wikipedia.org/wiki/Team_Fortress_2):
