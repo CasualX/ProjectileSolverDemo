@@ -55,11 +55,14 @@ fn moving(f: &mut dyn fmt::Write) -> fmt::Result {
 	};
 	let target = Target {
 		position: [450.0, 0.0],
-		velocity: [100.0, 50.0],
+		velocity: [100.0, 100.0],
+		gravity: 50.0,
 		..Default::default()
 	};
 	let s1 = Solver::lob(weapon, target).solve().unwrap();
 	let s2 = Solver::optimal(weapon, target).solve().unwrap();
+	eprintln!("    lob: {:?}", s1);
+	eprintln!("optimal: {:?}", s2);
 	xwrite! { f,
 		<svg width="800" height="450" viewBox="-50 -600 800 450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 			<g transform="translate(0, -200) scale(1,-1)">
@@ -69,17 +72,17 @@ fn moving(f: &mut dyn fmt::Write) -> fmt::Result {
 				<path d={path(seq(s1.time).map(|time| weapon.fire(s1.angle, time)))} fill="none" stroke="red" style="opacity: 0.5;" id="A_s1" />
 				<path d={path(seq(s2.time).map(|time| weapon.fire(s2.angle, time)))} fill="none" stroke="blue" style="opacity: 0.5;" id="A_s2" />
 				<circle r="5" fill="green">
-					<animateMotion dur={s1.time + 0.3} fill="freeze" begin="0s;A_m.end+1s">
+					<animateMotion dur={s1.time + 0.3} fill="freeze" begin="0s;A_m.end+1s" calcMode="linear">
 					<mpath xlink:href="#A_s0"></mpath>
 					</animateMotion>
 				</circle>
 				<circle r="5" fill="red">
-					<animateMotion id="A_m" dur={s1.time} fill="freeze" begin="0s;A_m.end+1s">
+					<animateMotion id="A_m" dur={s1.time} fill="freeze" begin="0s;A_m.end+1s" calcMode="linear">
 					<mpath xlink:href="#A_s1"></mpath>
 					</animateMotion>
 				</circle>
 				<circle r="5" fill="blue">
-					<animateMotion dur={s2.time} fill="freeze" begin="0s;A_m.end+1s">
+					<animateMotion dur={s2.time} fill="freeze" begin="0s;A_m.end+1s" calcMode="linear">
 					<mpath xlink:href="#A_s2"></mpath>
 					</animateMotion>
 				</circle>
@@ -100,6 +103,8 @@ fn stationary(f: &mut dyn fmt::Write) -> fmt::Result {
 	};
 	let s1 = Solver::lob(weapon, target).solve().unwrap();
 	let s2 = Solver::optimal(weapon, target).solve().unwrap();
+	eprintln!("    lob: {:?}", s1);
+	eprintln!("optimal: {:?}", s2);
 	xwrite! { f,
 		<svg width="800" height="450" viewBox="-50 -600 800 450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 			<g transform="translate(0, -200) scale(1,-1)">
@@ -109,12 +114,12 @@ fn stationary(f: &mut dyn fmt::Write) -> fmt::Result {
 				<path d={path(seq(s1.time).map(|time| weapon.fire(s1.angle, time)))} fill="none" stroke="red" style="opacity: 0.5;" id="B_s1" />
 				<path d={path(seq(s2.time).map(|time| weapon.fire(s2.angle, time)))} fill="none" stroke="blue" style="opacity: 0.5;" id="B_s2" />
 				<circle r="5" fill="red">
-					<animateMotion id="B_m" dur={s1.time} fill="freeze" begin="0s;B_m.end+1s">
+					<animateMotion id="B_m" dur={s1.time} fill="freeze" begin="0s;B_m.end+1s" calcMode="linear">
 					<mpath xlink:href="#B_s1"></mpath>
 					</animateMotion>
 				</circle>
 				<circle r="5" fill="blue">
-					<animateMotion dur={s2.time} fill="freeze" begin="0s;B_m.end+1s">
+					<animateMotion dur={s2.time} fill="freeze" begin="0s;B_m.end+1s" calcMode="linear">
 					<mpath xlink:href="#B_s2"></mpath>
 					</animateMotion>
 				</circle>
@@ -130,12 +135,14 @@ fn arbitrary(f: &mut dyn fmt::Write) -> fmt::Result {
 	};
 	let target = Target {
 		position: [650.0, 50.0],
-		velocity: [0.0, 0.0],
+		velocity: [-30.0, 20.0],
 		radius: 100.0,
 		..Default::default()
 	};
 	let s1 = Solver::lob(weapon, target).solve().unwrap();
 	let s2 = Solver::optimal(weapon, target).solve().unwrap();
+	eprintln!("    lob: {:?}", s1);
+	eprintln!("optimal: {:?}", s2);
 	xwrite! { f,
 		<svg width="800" height="450" viewBox="-50 -600 800 450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 			<g transform="translate(0, -200) scale(1,-1)">
@@ -145,17 +152,17 @@ fn arbitrary(f: &mut dyn fmt::Write) -> fmt::Result {
 				<path d={path(seq(s1.time).map(|time| weapon.fire(s1.angle, time)))} fill="none" stroke="red" style="opacity: 0.5;" id="C_s1" />
 				<path d={path(seq(s2.time).map(|time| weapon.fire(s2.angle, time)))} fill="none" stroke="blue" style="opacity: 0.5;" id="C_s2" />
 				<circle r="5" fill="green">
-					<animateMotion dur={s1.time + 0.3} fill="freeze" begin="0s;C_m.end+1s">
+					<animateMotion dur={s1.time + 0.3} fill="freeze" begin="0s;C_m.end+1s" calcMode="linear">
 					<mpath xlink:href="#C_s0"></mpath>
 					</animateMotion>
 				</circle>
 				<circle r="5" fill="red">
-					<animateMotion id="C_m" dur={s1.time} fill="freeze" begin="0s;C_m.end+1s">
+					<animateMotion id="C_m" dur={s1.time} fill="freeze" begin="0s;C_m.end+1s" calcMode="linear">
 					<mpath xlink:href="#C_s1"></mpath>
 					</animateMotion>
 				</circle>
 				<circle r="5" fill="blue">
-					<animateMotion dur={s2.time} fill="freeze" begin="0s;C_m.end+1s">
+					<animateMotion dur={s2.time} fill="freeze" begin="0s;C_m.end+1s" calcMode="linear" >
 					<mpath xlink:href="#C_s2"></mpath>
 					</animateMotion>
 				</circle>
@@ -176,8 +183,8 @@ pub struct Target {
 impl Target {
 	/// Extrapolates the target under freefall `time` seconds into the future.
 	pub fn predict(&self, time: f32) -> [f32; 2] {
-		let x = self.position[0] + self.velocity[0] * time + self.radius * f32::cos(time);
-		let y = self.position[1] + self.velocity[1] * time - self.gravity * time * time * 0.5 + self.radius * f32::sin(time);
+		let x = self.position[0] + self.velocity[0] * time + self.radius * f32::cos(time * 2.0);
+		let y = self.position[1] + self.velocity[1] * time - self.gravity * time * time * 0.5 + self.radius * f32::sin(time * 2.0);
 		[x, y]
 	}
 }
@@ -202,12 +209,20 @@ impl Weapon {
 }
 
 /// Projectile aiming solution.
-#[derive(Copy, Clone, Debug, Default)]
+#[derive(Copy, Clone, Default)]
 pub struct Solution {
 	/// Fire at this angle.
 	pub angle: f32,
 	/// Projectile will hit the target at this time in the future.
 	pub time: f32,
+}
+impl fmt::Debug for Solution {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		f.debug_struct("Solution")
+			.field("angle", &format_args!("{:.2}°", self.angle.to_degrees()))
+			.field("time", &format_args!("{:.2} s", self.time))
+			.finish()
+	}
 }
 
 /// Give up when the projectile fails to connect with the target this time in the future.

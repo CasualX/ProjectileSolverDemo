@@ -52,7 +52,7 @@ Everything is better with visualizations! Here's the result of the formulas:
 
 Legend:
 * The projectile is fired with `v0 = 650 u/s`, `g = 400 u/s²`.
-* Green is the target at position `[650, 150]`.
+* Green is the target at position `[650, 150] u`.
 * Blue is the optimal path aimed at `34.27°` and reaches the target in `1.21 s`.
 * Red lobs the projectile at `68.73°` and reaches the target in `2.76 s`.
 
@@ -120,9 +120,9 @@ And visualized:
 
 Legend:
 * The projectile is fired with `v0 = 600 u/s`, `g = 400 u/s²`.
-* Green is the target at position `[450, 0]` and is moving with velocity `[100, 50]` in a linear path.
-* Blue is the optimal path aimed at `24.96°` and reaches the target in `1.01 s`.
-* Red lobs the projectile at `61.17°` and reaches the target in `2.38 s`.
+* Green is the target at position `[450, 0] u`, with velocity `[100, 100] u/s` and gravity of `20 u/s²`.
+* Blue is the optimal path aimed at `28.22°` and reaches the target in `1.05 s`.
+* Red lobs the projectile at `61.78°` and reaches the target in `2.45 s`.
 
 The above animation shows the solver in 2D action but is trivially extended to 3D. Plug in an appropriate target position predictor and construct the 2D setup before solving.
 
