@@ -2,28 +2,17 @@
 
 use std::fmt;
 
-macro_rules! xprintln {
-	($($tt:tt)*) => {
-		println!("{}", format_xml::format_xml!($($tt)*));
-	};
-}
-macro_rules! xwrite {
-	($w:expr, $($tt:tt)*) => {
-		write!($w, "{}", format_xml::format_xml!{$($tt)*})
-	};
-}
-
 fn main() {
-	xprintln! {
+	format_xml::println! {
 		<!DOCTYPE html>
 		<html>
 		<head>
 			<title>"Projectile Solver"</title>
 		</head>
 			<body>
-				|f| {stationary(f)}
-				|f| {moving(f)}
-				|f| {arbitrary(f)}
+				|f| stationary(f)?;
+				|f| moving(f)?;
+				|f| arbitrary(f)?;
 			</body>
 		</html>
 	}
@@ -63,7 +52,7 @@ fn moving(f: &mut dyn fmt::Write) -> fmt::Result {
 	let s2 = Solver::optimal(weapon, target).solve().unwrap();
 	eprintln!("    lob: {:?}", s1);
 	eprintln!("optimal: {:?}", s2);
-	xwrite! { f,
+	format_xml::write! { f,
 		<svg width="800" height="450" viewBox="-50 -600 800 450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 			<g transform="translate(0, -200) scale(1,-1)">
 				<line x0="-1000" x1="2000" y0="0" y1="0" stroke="black" vector-effect="non-scaling-stroke" shape-rendering="crispEdges" />
@@ -105,7 +94,7 @@ fn stationary(f: &mut dyn fmt::Write) -> fmt::Result {
 	let s2 = Solver::optimal(weapon, target).solve().unwrap();
 	eprintln!("    lob: {:?}", s1);
 	eprintln!("optimal: {:?}", s2);
-	xwrite! { f,
+	format_xml::write! { f,
 		<svg width="800" height="450" viewBox="-50 -600 800 450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 			<g transform="translate(0, -200) scale(1,-1)">
 				<line x0="-1000" x1="2000" y0="0" y1="0" stroke="black" vector-effect="non-scaling-stroke" shape-rendering="crispEdges" />
@@ -143,7 +132,7 @@ fn arbitrary(f: &mut dyn fmt::Write) -> fmt::Result {
 	let s2 = Solver::optimal(weapon, target).solve().unwrap();
 	eprintln!("    lob: {:?}", s1);
 	eprintln!("optimal: {:?}", s2);
-	xwrite! { f,
+	format_xml::write! { f,
 		<svg width="800" height="450" viewBox="-50 -600 800 450" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 			<g transform="translate(0, -200) scale(1,-1)">
 				<line x0="-1000" x1="2000" y0="0" y1="0" stroke="black" vector-effect="non-scaling-stroke" shape-rendering="crispEdges" />
